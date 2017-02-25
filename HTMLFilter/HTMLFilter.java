@@ -15,10 +15,10 @@ public class HTMLFilter
 
     public static void main(String args[])
     {
-        if(args.length!=1)
-            System.out.println("Usage: java HTMLCleaner <Directory of HTMLs>");
+        if(args.length!=2)
+            System.out.println("Usage: java HTMLCleaner <Directory of HTMLs> <Output directory>");
         sourcePath = Paths.get(args[0]);
-        logPath = Paths.get("/home/simon/Desktop/log.txt");
+        logPath = Paths.get(args[1]);
 
 
         try (
@@ -27,6 +27,8 @@ public class HTMLFilter
         )
         {
         	ArrayList<Double> EPSs = new ArrayList<>();
+        	ArrayList<Double> Shares = new ArrayList<>();
+
             for (Path HTML: stream)
             {
             	log += "Filtering " + HTML.toString() + "\n";
@@ -38,6 +40,7 @@ public class HTMLFilter
                     while((line = reader.readLine()) != null)
                     	content+=line;
                     String EPS = "";
+                    String Share = "";
                     String[] words = clean(content).split(" ");
                     log += "\tClean words count: " + words.length + "\n";
                      System.out.println(words.length);
@@ -47,8 +50,15 @@ public class HTMLFilter
                     		EPS = words[c+1];
                     		break;
                     	}
+                    for(int c = 0; c < words.length;c++)
+                    	if(words[c].equals("Shares"))
+                        {
+                            Share = words[c+1];
+                            break;
+                        }
                     EPSs.add(Double.parseDouble(EPS));
                     log += "\tEPS: " + EPS + "\n";
+                    log += "\tShares: " + Share + "\n";
             	}
 
             }
@@ -88,8 +98,5 @@ public class HTMLFilter
 
 	public static String stripSpaces(String html)
 	{return html.replaceAll("\\p{Space}+", " ");}
-
-
-
 
 }
