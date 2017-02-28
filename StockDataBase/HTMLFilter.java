@@ -13,8 +13,10 @@ public class HTMLFilter
 
     private static String log = "";
 
-    public static void main(String args[])
+    public static String cleanAndFilterInfo(String args[])
     {
+
+        String output = "";
         if(args.length!=2)
             System.out.println("Usage: java HTMLCleaner <Directory of HTMLs> <Output directory>");
         sourcePath = Paths.get(args[0]);
@@ -26,11 +28,12 @@ public class HTMLFilter
         		BufferedWriter writer = Files.newBufferedWriter(logPath, StandardCharsets.UTF_8);
         )
         {
-        	ArrayList<Double> EPSs = new ArrayList<>();
-        	ArrayList<Double> Shares = new ArrayList<>();
-
             for (Path HTML: stream)
             {
+                if(Files.isDirectory(HTML))
+                {System.out.println("CheCK");continue;}
+
+
             	log += "Filtering " + HTML.toString() + "\n";
                 System.out.println("Filtering " + HTML.toString());
             	try(BufferedReader reader = Files.newBufferedReader(HTML, StandardCharsets.UTF_8))
@@ -44,29 +47,25 @@ public class HTMLFilter
                     String[] words = clean(content).split(" ");
                     log += "\tClean words count: " + words.length + "\n";
                      System.out.println(words.length);
-                    for(int c = 50;c < words.length;c++)
-                    	if(words[c].equals("EPS"))
-                    	{
-                    		EPS = words[c+1];
-                    		break;
-                    	}
-                    for(int c = 0; c < words.length;c++)
-                    	if(words[c].equals("Shares"))
-                        {
-                            Share = words[c+1];
-                            break;
-                        }
-                    EPSs.add(Double.parseDouble(EPS));
+                     for(int i = 0; i <words.length;i++)
+                     {
+                         if(words[i].equals("Est.") || words[i].equals("Actual"))
+                         {
+                             System.out.println("Found");
+                             output += words[i+1]+","+words[i+2]+","+words[i+3]+","+words[i+4] + ",";
+                         }
+                     }
                     log += "\tEPS: " + EPS + "\n";
                     log += "\tShares: " + Share + "\n";
             	}
-
             }
             writer.write(log);
         } catch (IOException | DirectoryIteratorException x)
         {
             x.printStackTrace();
         }
+
+        return output;
     }
 
 
