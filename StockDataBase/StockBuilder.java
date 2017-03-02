@@ -7,5 +7,8 @@ import java.nio.file.*;
 import java.util.*;
 public class StockBuilder
 {
-    private
+    private Path root;
+    private Path log;
+    
+
 }

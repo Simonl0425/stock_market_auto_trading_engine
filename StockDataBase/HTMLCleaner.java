@@ -4,15 +4,14 @@ import java.io.BufferedWriter;
 import java.nio.file.Path;
 import java.nio.charset.StandardCharsets;
 import java.io.IOException;
-
+import java.io.PrintWriter;
+import java.io.FileWriter;
 public class HTMLCleaner
 {
-    private static Path path;
-    private static Path logPath;
     private static String content = "";
     private static String log;
 
-    private static BufferedWriter logWriter;
+    private static PrintWriter logWriter;
     private static BufferedReader fileReader;
 
     public static String clean(Path path, Path logPath) throws IOException, IllegalArgumentException
@@ -21,7 +20,8 @@ public class HTMLCleaner
         {throw new IllegalArgumentException();}
 
         log = "";
-        logWriter = Files.newBufferedWriter(logPath,StandardCharsets.UTF_8);
+        BufferedWriter bw = new BufferedWriter(new FileWriter(logPath.toString(), true));
+        logWriter = new PrintWriter(bw);
         fileReader = Files.newBufferedReader(path,StandardCharsets.UTF_8);
         log += "Cleaning " + path.toString() + "\n";
 
@@ -35,7 +35,7 @@ public class HTMLCleaner
         long endTime = System.currentTimeMillis();
         log += "\tCleaning took: " + (endTime - startTime)/1000.0 + " seconds\n";
 
-        logWriter.append(log);
+        logWriter.write(log);
         logWriter.flush();
 
         return content;
