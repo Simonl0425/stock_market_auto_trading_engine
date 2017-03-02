@@ -25,7 +25,7 @@ public class EPS
 
     public EPS(ArrayList<Double> input)
     {
-        DecimalFormat doublesFormatter = new DecimalFormat("##.##");
+        DecimalFormat doublesFormatter = new DecimalFormat("##.00");
         Q1_EST = input.get(0);
         Q2_EST = input.get(1);
         Q3_EST = input.get(2);
@@ -60,10 +60,23 @@ public class EPS
             case 1:return Q2_GROWTH;
             case 2:return Q3_GROWTH;
             case 3:return Q4_GROWTH;default: return null;}}
+    public Double getActual(int Q){switch(Q){
+            case 0:return Q1_ACTUAL;
+            case 1:return Q2_ACTUAL;
+            case 2:return Q3_ACTUAL;
+            case 3:return Q4_ACTUAL;default: return null;}}
 
-    public Double[] getGrowthAll(){Double[] output = new Double[4];for(int i = 0; i < 4;i++){output[i] = getGrowth(i);}return output;}
+
+    public Double[] getGrowthAll(){
+        Double[] output = new Double[4];
+        for(int i = 0; i < 4;i++){
+            output[i] = getGrowth(i);
+        }
+        return output;
+    }
     public Double[] getDiffAll(){Double[] output = new Double[4];for(int i = 0; i < 4;i++){output[i] = getDiff(i);}return output;}
     public Double[] getEstAll(){Double[] output = new Double[4];for(int i = 0; i < 4;i++){output[i] = getEst(i);}return output;}
+    public Double[] getActualAll(){Double[] output = new Double[4];for(int i = 0; i < 4;i++){output[i] = getActual(i);}return output;}
 
     public String toString()
     {

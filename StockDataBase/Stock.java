@@ -14,4 +14,5 @@ public class Stock
     private Double monthAverage;
     private Double weekAverage;
     private Double dualWeekAverage;
+
 }
