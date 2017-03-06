@@ -13,9 +13,7 @@ public class testerr
 
         try{System.out.println(HTMLCleaner.clean(path,log));}
         catch(Exception e)
-        {
-            e.printStackTrace();
-        }
+        {e.printStackTrace();}
 
     }
 }
