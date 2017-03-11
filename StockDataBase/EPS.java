@@ -3,6 +3,7 @@ import java.util.ArrayList;
 public class EPS
 {
     private ArrayList<Double> variablesCopies;
+    private boolean isValid = true;
     private Double Q1_ACTUAL;
     private Double Q2_ACTUAL;
     private Double Q3_ACTUAL;
@@ -25,6 +26,7 @@ public class EPS
 
     public EPS(ArrayList<Double> input)
     {
+        if(input.contains(null)){isValid = false;return;}
         DecimalFormat doublesFormatter = new DecimalFormat("##.00");
         Q1_EST = input.get(0);
         Q2_EST = input.get(1);

@@ -15,7 +15,6 @@ public class Traverser
     private static Path log;
 
     private static PrintWriter logWriter;
-    private static BufferedReader fileReader;
 
     public static HashSet<HashSet<Path>> get(Path root, Path logPath) throws IOException
     {
@@ -47,7 +46,6 @@ public class Traverser
         log += "Done, process took " + (endTime - startTime)/1000.0 + "seconds \n";
         logWriter.write(log);
         logWriter.flush();
-
 
         return structure;
     }
