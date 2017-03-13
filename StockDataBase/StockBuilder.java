@@ -102,14 +102,16 @@ public class StockBuilder
             }
             logWriter.flush();
             logWriter.close();
+
+            long end = System.currentTimeMillis();
+            System.out.println(set);
+            System.out.println("Process took: " + (end - start)/1000.0 + "seconds");
+            System.out.println("Per stock average: " + (end - start)/1000.0/structure.size() + "seconds");
         }catch(Exception e)
         {
             e.printStackTrace();
         }
-        long end = System.currentTimeMillis();
-        System.out.println(set);
-        System.out.println("Process took: " + (end - start)/1000.0 + "seconds");
-        System.out.println("Per stock average: " + (end - start)/3000000.0 + "seconds");
+
 
 
 
