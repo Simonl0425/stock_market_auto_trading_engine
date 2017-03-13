@@ -30,8 +30,7 @@ public class StockBuilder
 
             BufferedWriter bw = new BufferedWriter(new FileWriter(logPath.toString(), true));
             PrintWriter logWriter = new PrintWriter(bw);
-
-
+            int cnt = 0;
             for(HashSet<Path> stockFolder: structure)
             {
                 String name = "";
@@ -76,8 +75,7 @@ public class StockBuilder
                                 if(words[i].equals("Date") && words[i-1].equals("Earnings"))
                                 {
                                     earningDate = words[i+1]+words[i+2]+words[i+3]+words[i+4]+words[i+5]+words[i+6]+words[i+7];
-                                }
-                                if(words[i].equals("Range") && words[i-1].equals("Week") && words[i-2].equals("52"))
+                                }else if(words[i].equals("Range") && words[i-1].equals("Week") && words[i-2].equals("52"))
                                 {
                                     range52 = words[i+1] + " " + words[i+2] + " " + words[i+3];
                                 }
@@ -91,26 +89,29 @@ public class StockBuilder
                         logWriter.write("===>Unknown file detected at" + stockFile.toString() + "\n");
                     }
                 }
-
+                Stock temp;
                 if(alias != "" && name != "" && earningDate != "" && EPS_text != "" && range52 != "" && csvPath != null)
                 {
-                    Stock temp = new Stock(alias,name,earningDate,range52,EPS_text,csvPath);
+                    temp = new Stock(alias,name,earningDate,range52,EPS_text,csvPath,true);
                     logWriter.write("Data Collected, constructing Stock object " + temp.hashCode() + "\n");
-                    set.add(temp);
                 }else{
                     logWriter.write("===============!Infomation did not collect fully!=================\n");
+                    temp = new Stock(alias,name,earningDate,range52,EPS_text,csvPath,false);
                 }
-                logWriter.flush();
+                set.add(temp);
             }
-
-
+            logWriter.flush();
             logWriter.close();
         }catch(Exception e)
         {
             e.printStackTrace();
         }
         long end = System.currentTimeMillis();
+        System.out.println(set);
         System.out.println("Process took: " + (end - start)/1000.0 + "seconds");
+        System.out.println("Per stock average: " + (end - start)/3000000.0 + "seconds");
+
+
 
     }
 

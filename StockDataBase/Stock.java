@@ -5,6 +5,7 @@ public class Stock implements Comparable<Stock>
     private Path dailyPriceCSV;
     private final String NAME;
     private final String ALIAS;
+    private boolean isValid;
     private String earningDate;
     private String EPS_text;
     private EPS eps;
@@ -16,8 +17,9 @@ public class Stock implements Comparable<Stock>
     private Double weekAverage;
     private Double dualWeekAverage;
 
-    public Stock(String alias, String name, String earningDate, String range52, String EPS_text, Path csvPath)
+    public Stock(String alias, String name, String earningDate, String range52, String EPS_text, Path csvPath, boolean isValid)
     {
+        this.isValid = isValid;
         ALIAS = alias;
         NAME = name;
         this.earningDate = earningDate;
@@ -31,12 +33,7 @@ public class Stock implements Comparable<Stock>
     public String toString()
     {
         String output = "";
-        output += "=============================================\n" + NAME + "|" + ALIAS + "\n";
-        output += "ED: " + earningDate + "\n";
-        output += "Range: " + range52 + "\n";
-        output += "EPS: " + EPS_text + "\n";
-        output += "CSV point at: " + dailyPriceCSV.toString();
-        output += "\n============================================\n";
+        output += ALIAS + "|" + NAME + "|" + isValid + "|Path: " + dailyPriceCSV.toString();
         return output;
     }
 
@@ -44,6 +41,7 @@ public class Stock implements Comparable<Stock>
     {
         return ALIAS.compareTo(stock.ALIAS);
     }
+
 
     private void setEPS()
     {

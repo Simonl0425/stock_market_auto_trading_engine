@@ -12,6 +12,7 @@ public class HTMLCleaner
     private static PrintWriter logWriter;
     private static BufferedReader fileReader;
 
+
     public static String clean(Path path, Path logPath) throws IOException, IllegalArgumentException
     {
         String log = "";
@@ -61,13 +62,13 @@ public class HTMLCleaner
 	{return html.replaceAll("&[^\\s]+?;", " ");}
 
 	public static String stripComments(String html)
-	{return html.replaceAll("(?s)<!-.*?->", " ");}
+	{return html.replaceAll("(?s)<!-.+?->", " ");}
 
 	public static String stripTags(String html)
 	{return html.replaceAll("<[^>]+?>", " ");}
 
 	public static String stripElement(String html, String name)
-	{return html.replaceAll("(?s)(?i)<"+name+".+?</"+name+".*?>", " ");}
+	{return html.replaceAll("(?s)(?i)<"+name+".+?</"+name+".+?>", " ");}
 
 	public static String stripSpaces(String html)
 	{return html.replaceAll("\\p{Space}+", " ");}
