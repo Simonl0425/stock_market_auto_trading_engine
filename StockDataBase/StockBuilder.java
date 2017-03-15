@@ -6,33 +6,55 @@ import java.nio.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.*;
+import java.text.SimpleDateFormat;
 
 public class StockBuilder
 {
     private static Path root;
     private static Path logPath;
+    private static boolean DEBUG = false;
+    private static PrintWriter logWriter;
+
 
     public static void main(String args[])
     {
-        if(args.length != 2)
+
+
+        ArgumentMap arguments = new ArgumentMap();
+        arguments.parse(args);
+
+        if(arguments.hasFlag("-d")){DEBUG = true;}
+        if(arguments.hasFlag("-l") && arguments.hasValue("-l"))
         {
-            System.err.println("Usage: java StockBuilder <directory> <log.txt path>");
+            logPath = Paths.get(arguments.getValue("-l"));
+        }
+        if(arguments.hasFlag("-p") && arguments.hasValue("-p"))
+        {
+            root = Paths.get(arguments.getValue("-p"));
+        }else{
+            System.out.println("\nUsage: java StockBuilder <flag> <value>\n\t-p <path> input path\n\t-l <path> enable logging with path\n\t-d        enable debugging mode\n");
             System.exit(1);
         }
-        long start = System.currentTimeMillis();
-        root = Paths.get(args[0]);
-        logPath = Paths.get(args[1]);
+
         StockSet set = new StockSet();
 
         try
         {
-            HashSet<HashSet<Path>> structure = Traverser.get(root,logPath);
+            HashSet<HashSet<Path>> structure = Traverser.get(root);
 
-            BufferedWriter bw = new BufferedWriter(new FileWriter(logPath.toString(), true));
-            PrintWriter logWriter = new PrintWriter(bw);
+            long start = System.currentTimeMillis();
+
+            if(logPath != null)
+            {
+                BufferedWriter bw = new BufferedWriter(new FileWriter(logPath.toString(), true));
+                logWriter = new PrintWriter(bw);
+            }
+
             int cnt = 0;
             for(HashSet<Path> stockFolder: structure)
             {
+                for(int i = 0; i < String.valueOf(cnt).length()+9;i++){System.out.print("\b");}
+                System.out.print("Working: "+cnt++);
                 String name = "";
                 String alias = "";
                 String earningDate = "";
@@ -45,15 +67,12 @@ public class StockBuilder
                 {
                     if(stockFile.toString().toLowerCase().endsWith(".html"))
                     {
-                        String words[] = HTMLCleaner.clean(stockFile, logPath).split("\\p{Space}");
+                        String words[] = HTMLCleaner.clean(stockFile).split("\\p{Space}");
                         if(stockFile.getFileName().toString().toLowerCase().startsWith("analysts"))
                         {
                             alias = words[1];
                             alias = alias.trim();
-                            int c = 8;
-                            while(!words[c].equals("Stock"))
-                            {name += words[c] + " "; c++;}
-                            name = name.trim();
+
                             for(int i = 10;i < words.length;i++)
                             {
                                 if(words[i].equals("Est.") || words[i].equals("Actual"))
@@ -66,11 +85,17 @@ public class StockBuilder
                             {
                                 EPS_text = EPS_text.substring(0,EPS_text.length() - 1);
                             }else{
-                                logWriter.write("Illegal EPS detected, data member count: " + EPS_text.split(",").length + "\n");
+                                log("==========!!!Illegal EPS detected, illegal data member count: " + EPS_text.split(",").length + "\n");
                             }
                         }else if(stockFile.getFileName().toString().toLowerCase().startsWith("summary"))
                         {
-                            for(int i = 50; i < 300;i++)
+                            int c = 5;
+                            while(!words[c].equals("-") && c < words.length-1)
+                            {name += words[c] + " "; c++;}
+                            name = name.trim();
+
+
+                            for(int i = 50; i < Math.min(300,words.length);i++)
                             {
                                 if(words[i].equals("Date") && words[i-1].equals("Earnings"))
                                 {
@@ -83,39 +108,40 @@ public class StockBuilder
                         }
                     }else if(stockFile.toString().toLowerCase().endsWith(".csv"))
                     {
-                        logWriter.write("\tCSV captured\n");
+                        log("     CSV captured\n");
                         csvPath = Paths.get(stockFile.toString());
                     }else{
-                        logWriter.write("===>Unknown file detected at" + stockFile.toString() + "\n");
+                        log("======>Unknown file detected at" + stockFile.toString() + "\n");
                     }
                 }
-                Stock temp;
-                if(alias != "" && name != "" && earningDate != "" && EPS_text != "" && range52 != "" && csvPath != null)
-                {
-                    temp = new Stock(alias,name,earningDate,range52,EPS_text,csvPath,true);
-                    logWriter.write("Data Collected, constructing Stock object " + temp.hashCode() + "\n");
-                }else{
-                    logWriter.write("===============!Infomation did not collect fully!=================\n");
-                    temp = new Stock(alias,name,earningDate,range52,EPS_text,csvPath,false);
-                }
-                set.add(temp);
+                log("Data captrured, attempting to create stock object...");
+                set.add(new Stock(alias,name,earningDate,range52,EPS_text,csvPath));
             }
-            logWriter.flush();
-            logWriter.close();
 
             long end = System.currentTimeMillis();
+            System.out.println("done");
             System.out.println(set);
             System.out.println("Process took: " + (end - start)/1000.0 + "seconds");
             System.out.println("Per stock average: " + (end - start)/1000.0/structure.size() + "seconds");
+
+            if(logWriter != null)
+            {
+                logWriter.close();
+            }
         }catch(Exception e)
         {
             e.printStackTrace();
         }
-
-
-
-
     }
 
+
+    public static void log(String input)
+    {
+        if(logWriter != null)
+        {
+            input = "["+ new SimpleDateFormat("HH:mm:ss:SSS").format(Calendar.getInstance().getTime()).toString() + "]" + input;
+            logWriter.write(input);
+        }
+    }
 
 }

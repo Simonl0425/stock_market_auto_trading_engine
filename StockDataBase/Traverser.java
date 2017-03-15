@@ -12,23 +12,19 @@ import java.io.File;
 public class Traverser
 {
     private static Path root;
-    private static Path log;
 
-    private static PrintWriter logWriter;
 
-    public static HashSet<HashSet<Path>> get(Path root, Path logPath) throws IOException
+    public static HashSet<HashSet<Path>> get(Path root) throws IOException
     {
         String log = "";
         HashSet<HashSet<Path>> structure = new HashSet<>();
-        BufferedWriter bw = new BufferedWriter(new FileWriter(logPath.toString(), true));
-        logWriter = new PrintWriter(bw);
 
         long startTime = System.currentTimeMillis();
 
 
         DirectoryStream<Path> stream_outer = Files.newDirectoryStream(root);
         int size = new File(root.toString()).listFiles().length;
-        log += "Traversing through " + root + "("+ size + ")...";
+        StockBuilder.log("Traversing through " + root + "("+ size + ")...");
         for(Path po: stream_outer)
         {
             DirectoryStream<Path> stream_inner = Files.newDirectoryStream(po);
@@ -43,9 +39,8 @@ public class Traverser
         stream_outer.close();
 
         long endTime = System.currentTimeMillis();
-        log += "Done, process took " + (endTime - startTime)/1000.0 + "seconds \n";
-        logWriter.write(log);
-        logWriter.flush();
+        StockBuilder.log("Done, process took " + (endTime - startTime)/1000.0 + "seconds \n");
+
 
         return structure;
     }

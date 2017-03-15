@@ -25,11 +25,19 @@ public class StockSet
     public String toString()
     {
         String output = "";
-        output += "Set at location" + this.hashCode() +  " contains " + size() + " stocks\n" ;
+        output += "\nSet at location" + this.hashCode() +  " contains " + size() + " stocks\n\n" ;
+        int invalidCnt = 0;
         for(Stock s: stocks)
         {
             output += s.toString() + "\n";
+            if(!s.isValid())invalidCnt++;
         }
+
+
+
+        output += "\nTotal of " + size() + " stocks, " + invalidCnt + " are invalid.";
         return output;
+
+
     }
 }

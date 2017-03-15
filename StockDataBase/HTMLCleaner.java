@@ -6,21 +6,19 @@ import java.nio.charset.StandardCharsets;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.FileWriter;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 public class HTMLCleaner
 {
 
-    private static PrintWriter logWriter;
     private static BufferedReader fileReader;
 
 
-    public static String clean(Path path, Path logPath) throws IOException, IllegalArgumentException
+    public static String clean(Path path) throws IOException, IllegalArgumentException
     {
-        String log = "";
 
-        BufferedWriter bw = new BufferedWriter(new FileWriter(logPath.toString(), true));
-        logWriter = new PrintWriter(bw);
         fileReader = Files.newBufferedReader(path,StandardCharsets.UTF_8);
-        log += "\tCleaning " + path.toString() + "\n";
+        StockBuilder.log("     Cleaning " + path.toString() + "\n");
         long startTime = System.currentTimeMillis();
 
         StringBuilder content = new StringBuilder();
@@ -31,20 +29,12 @@ public class HTMLCleaner
 
         content = new StringBuilder(clean(content.toString()));
         long endTime = System.currentTimeMillis();
-        log += "\t\tCleaning took: " + (endTime - startTime)/1000.0 + " seconds\n";
+        StockBuilder.log("\t\tCleaning took: " + (endTime - startTime)/1000.0 + " seconds\n");
 
-        logWriter.write(log);
-        logWriter.flush();
         fileReader.close();
 
         return content.toString();
     }
-
-
-
-
-
-
 
 
     public static String clean(String html)
@@ -62,13 +52,13 @@ public class HTMLCleaner
 	{return html.replaceAll("&[^\\s]+?;", " ");}
 
 	public static String stripComments(String html)
-	{return html.replaceAll("(?s)<!-.+?->", " ");}
+	{return html.replaceAll("(?s)<!-.*?->", " ");}
 
 	public static String stripTags(String html)
 	{return html.replaceAll("<[^>]+?>", " ");}
 
 	public static String stripElement(String html, String name)
-	{return html.replaceAll("(?s)(?i)<"+name+".+?</"+name+".+?>", " ");}
+	{return html.replaceAll("(?s)(?i)<"+name+".+?</"+name+".*?>", " ");}
 
 	public static String stripSpaces(String html)
 	{return html.replaceAll("\\p{Space}+", " ");}
