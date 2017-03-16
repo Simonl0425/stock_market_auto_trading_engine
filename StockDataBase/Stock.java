@@ -11,6 +11,7 @@ import java.text.DecimalFormat;
 
 public class Stock implements Comparable<Stock>
 {
+    public static int cnttt = 0;
     public boolean DEBUG = false;
     private Path dailyPriceCSV;
     private final String NAME;
@@ -21,12 +22,12 @@ public class Stock implements Comparable<Stock>
     private EPS eps;
     private String range52;
 
-    private Double year_High = 0.0;
-    private Double year_Low = 0.0;
-    private Double year_Average = 0.0;
-    private Double monthAverage = 0.0;
-    private Double weekAverage = 0.0;
-    private Double dualWeekAverage = 0.0;
+    private Double year_High;
+    private Double year_Low;
+    private Double year_Average;
+    private Double monthAverage;
+    private Double weekAverage;
+    private Double dualWeekAverage;
 
     private DecimalFormat twoDecimalFormatter = new DecimalFormat(".##");
 
@@ -48,7 +49,6 @@ public class Stock implements Comparable<Stock>
             //long end  = System.currentTimeMillis();
             //System.out.println("Took " + (end - start)/1000.0 + " to create stock object");
             StockBuilder.log("Success!\n");
-            isValid = true;
         }else{
             isValid = false;
             if(name.length() > 100){NAME = "BAD NAME";}else{NAME = name;}
@@ -96,7 +96,7 @@ public class Stock implements Comparable<Stock>
 
     private void processCSV() throws IOException
     {
-        if(isValid)
+        if(dailyPriceCSV != null)
         {
             BufferedReader reader = Files.newBufferedReader(dailyPriceCSV,StandardCharsets.UTF_8);
             reader.readLine();

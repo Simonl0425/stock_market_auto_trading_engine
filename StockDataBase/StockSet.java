@@ -5,11 +5,11 @@ import java.util.*;
 
 public class StockSet
 {
-    private HashSet<Stock> stocks;
+    private TreeSet<Stock> stocks;
 
     public StockSet()
     {
-        stocks = new HashSet<>();
+        stocks = new TreeSet<>();
     }
 
     public boolean add(Stock stock)
@@ -29,6 +29,7 @@ public class StockSet
         int invalidCnt = 0;
         for(Stock s: stocks)
         {
+            if(s == null){System.out.println("Invalid Stock");continue;}
             output += s.toString() + "\n";
             if(!s.isValid())invalidCnt++;
         }

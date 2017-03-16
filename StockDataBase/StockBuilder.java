@@ -62,17 +62,21 @@ public class StockBuilder
                 String range52 = "";
                 Path csvPath = null;
 
-
+                stock:
                 for(Path stockFile: stockFolder)
                 {
+                    //System.out.println(stockFile);
                     if(stockFile.toString().toLowerCase().endsWith(".html"))
                     {
-                        String words[] = HTMLCleaner.clean(stockFile).split("\\p{Space}");
+                        String text = HTMLCleaner.clean(stockFile);
+                        if(text.contains("Did you mean"))
+                        {
+                            set.add(new Stock("NULL","NULL",null,null,null,null));
+                            break stock;
+                        }
+                        String words[] = text.split("\\p{Space}");
                         if(stockFile.getFileName().toString().toLowerCase().startsWith("analysts"))
                         {
-                            alias = words[1];
-                            alias = alias.trim();
-
                             for(int i = 10;i < words.length;i++)
                             {
                                 if(words[i].equals("Est.") || words[i].equals("Actual"))
@@ -89,6 +93,8 @@ public class StockBuilder
                             }
                         }else if(stockFile.getFileName().toString().toLowerCase().startsWith("summary"))
                         {
+                            alias = words[1];
+                            alias = alias.trim();
                             int c = 5;
                             while(!words[c].equals("-") && c < words.length-1)
                             {name += words[c] + " "; c++;}
@@ -123,6 +129,7 @@ public class StockBuilder
             System.out.println(set);
             System.out.println("Process took: " + (end - start)/1000.0 + "seconds");
             System.out.println("Per stock average: " + (end - start)/1000.0/structure.size() + "seconds");
+            System.out.println(Stock.cnttt);
 
             if(logWriter != null)
             {
