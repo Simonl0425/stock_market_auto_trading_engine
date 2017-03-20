@@ -8,11 +8,7 @@ public class testerr
 {
     public static void main(String args[])
     {
-        Path path = Paths.get(args[0]);
-
-        try{System.out.println(HTMLCleaner.clean(path));}
-        catch(Exception e)
-        {e.printStackTrace();}
-
+        String arg[] = {"-p","../test/Nasdaq","-l","../log.txt"};
+        StockBuilder.build(arg);
     }
 }

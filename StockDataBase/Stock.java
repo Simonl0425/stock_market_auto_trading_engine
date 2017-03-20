@@ -21,6 +21,7 @@ public class Stock implements Comparable<Stock>
     private String EPS_text;
     private EPS eps;
     private String range52;
+    public String FAILS ="";
 
     private Double year_High;
     private Double year_Low;
@@ -34,7 +35,7 @@ public class Stock implements Comparable<Stock>
 
     public Stock(String alias, String name, String earningDate, String range52, String EPS_text, Path csvPath) throws IOException
     {
-        if(alias != "" && name != "" && earningDate != "" && EPS_text != "" && range52 != "" && csvPath != null)
+        if(!alias.equals("") && !name.equals("") && !earningDate.equals("") && !EPS_text.equals("") && !range52.equals("") && csvPath != null)
         {
             //long start  = System.currentTimeMillis();
             isValid = true;
@@ -53,6 +54,24 @@ public class Stock implements Comparable<Stock>
             isValid = false;
             if(name.length() > 100){NAME = "BAD NAME";}else{NAME = name;}
             ALIAS = alias;
+            if(earningDate.equals(""))
+            {
+                FAILS += "ED,";
+            }
+            if(EPS_text.equals(""))
+            {
+                FAILS += "EPS,";System.out.println(ALIAS);
+            }
+            if(range52.equals(""))
+            {
+                FAILS += "RANGE,";
+            }
+            if(csvPath == null)
+            {
+                FAILS += "PATH,";
+            }
+            if(FAILS.length() > 1){FAILS += "\b";}
+
             StockBuilder.log("Failed! Stock invalid, " + alias + "|" + name+ "|" + earningDate+ "|" + range52+ "|" + EPS_text+ "|" + csvPath);
         }
     }
@@ -67,6 +86,8 @@ public class Stock implements Comparable<Stock>
             output += ALIAS + "|" + NAME + "|" + twoDecimalFormatter.format(weekAverage) + "  " + twoDecimalFormatter.format(dualWeekAverage) + "  " + twoDecimalFormatter.format(year_Average) + "  ";
         }else{
             output += ALIAS + "|" + NAME + "|BAD DATA";
+
+
         }
         return output;
     }
@@ -77,20 +98,23 @@ public class Stock implements Comparable<Stock>
     }
 
 
-    private void setEPS()
+    private boolean setEPS()
     {
         ArrayList<Double> doubles = new ArrayList<>();
         String split[]  = EPS_text.split(",");
+        boolean complete = true;
         for(String s: split)
         {
             if(s.equals("N/A") || s.isEmpty() || s == null)
             {
                 doubles.add(null);
+                complete = false;
             }else{
                 doubles.add(Double.parseDouble(s));
             }
         }
         eps = new EPS(doubles);
+        return complete;
     }
 
 

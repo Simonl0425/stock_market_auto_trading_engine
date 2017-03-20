@@ -23,11 +23,11 @@ public class HTMLCleaner
 
         StringBuilder content = new StringBuilder();
         String line = "";
+
         while((line = fileReader.readLine()) != null)
         {content.append(line);}
 
-
-        content = new StringBuilder(clean(content.toString()));
+        content = new StringBuilder(clean(content.substring(0,content.length()/2).toString()));
         long endTime = System.currentTimeMillis();
         StockBuilder.log("\t\tCleaning took: " + (endTime - startTime)/1000.0 + " seconds\n");
 
@@ -41,8 +41,8 @@ public class HTMLCleaner
     {
     	html = stripComments(html);
     	html = stripElement(html, "head");
+        html = stripElement(html, "script");
 		html = stripElement(html, "style");
-		html = stripElement(html, "script");
     	html = stripTags(html);
     	html = stripEntities(html);
 		html = stripSpaces(html);

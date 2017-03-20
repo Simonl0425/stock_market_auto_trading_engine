@@ -5,18 +5,20 @@ import java.io.PrintWriter;
 import java.nio.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
-import java.util.*;
 import java.text.SimpleDateFormat;
-
+import java.util.*;
+import org.omg.CORBA.SystemException;
+import java.text.DecimalFormat;
 public class StockBuilder
 {
     private static Path root;
     private static Path logPath;
     private static boolean DEBUG = false;
     private static PrintWriter logWriter;
+    private static DecimalFormat doublesFormatter = new DecimalFormat("0.000000");
 
 
-    public static void main(String args[])
+    public static long build(String args[])
     {
 
 
@@ -37,13 +39,12 @@ public class StockBuilder
         }
 
         StockSet set = new StockSet();
-
+        long start = System.currentTimeMillis();
+        HashSet<HashSet<Path>> structure = null;
+        long cleanTime = 0;
         try
         {
-            HashSet<HashSet<Path>> structure = Traverser.get(root);
-
-            long start = System.currentTimeMillis();
-
+            structure = Traverser.get(root);
             if(logPath != null)
             {
                 BufferedWriter bw = new BufferedWriter(new FileWriter(logPath.toString(), true));
@@ -68,7 +69,10 @@ public class StockBuilder
                     //System.out.println(stockFile);
                     if(stockFile.toString().toLowerCase().endsWith(".html"))
                     {
+                        long cleanStart = System.currentTimeMillis();
                         String text = HTMLCleaner.clean(stockFile);
+                        long cleanEnd = System.currentTimeMillis();
+                        cleanTime += (cleanEnd- cleanStart);
                         if(text.contains("Did you mean"))
                         {
                             set.add(new Stock("NULL","NULL",null,null,null,null));
@@ -124,12 +128,6 @@ public class StockBuilder
                 set.add(new Stock(alias,name,earningDate,range52,EPS_text,csvPath));
             }
 
-            long end = System.currentTimeMillis();
-            System.out.println("done");
-            System.out.println(set);
-            System.out.println("Process took: " + (end - start)/1000.0 + "seconds");
-            System.out.println("Per stock average: " + (end - start)/1000.0/structure.size() + "seconds");
-            System.out.println(Stock.cnttt);
 
             if(logWriter != null)
             {
@@ -139,6 +137,16 @@ public class StockBuilder
         {
             e.printStackTrace();
         }
+        long end = System.currentTimeMillis();
+        System.out.println("done");
+        System.out.println(set);
+        System.out.println("Process took: " + doublesFormatter.format((end - start)/1000.0) + " seconds");
+        System.out.println("Total Cleaning time: " + doublesFormatter.format(cleanTime/1000.0) + " seconds");
+        System.out.println("Per stock total average: " + doublesFormatter.format((end - start)/1000.0/structure.size()) + " seconds");
+        System.out.println("Per stock cleaning time average: " + doublesFormatter.format(cleanTime/1000.0/structure.size()) + " seconds");
+        System.out.println("Per stock calclulation time average: "+ doublesFormatter.format(((end - start)/1000.0/structure.size())-(cleanTime/1000.0/structure.size()))+ " seconds");
+        System.out.println(Stock.cnttt);
+        return (end - start);
     }
 
 
