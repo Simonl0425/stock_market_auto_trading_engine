@@ -50,9 +50,13 @@ public class CSVhandler
 
 
     /**
-     * This method is used to retrive compiled data from a given csv file.
-     * Gather data from csv file and use the data to contruct a Stock Object, please reference the csv file and the Stock Constructor for detail formatting
-     * Contruct a StockSet and use StockSet.add(Stock) method to add individual Stock to the StockSet and return. Reference StockSet class.
+     *This method is used to retrive compiled data from a given csv file.
+     *Gather data from csv file and use the data to contruct a Stock Object,
+     *please reference the csv file and the Stock Constructor for
+     *detail formatting.
+     *
+     *Contruct a StockSet and use StockSet.add(Stock) method to add individual
+     *Stock to the StockSet and return. Refer StockSet class.
      *
      * @param  path  the path of the data.csv
      * @return       a StockSet that contains all Stock objects built from csv.
