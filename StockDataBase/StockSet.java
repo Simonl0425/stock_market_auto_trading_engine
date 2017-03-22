@@ -17,6 +17,11 @@ public class StockSet
         return stocks.add(stock);
     }
 
+    public Iterator<Stock> getIterator()
+    {
+        return stocks.iterator();
+    }
+
     public int size()
     {
         return stocks.size();
@@ -45,11 +50,7 @@ public class StockSet
             if(s.FAILS.contains("EPS"))epsCnt++;
         }
 
-
-
         output += "\nTotal of " + size() + " stocks, " + invalidCnt + " are invalid, " + pathCnt + " are caused by bad csv Path, " + epsCnt + " are caused by bad EPS capture.";
         return output;
-
-
     }
 }

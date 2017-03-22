@@ -60,7 +60,7 @@ public class Stock implements Comparable<Stock>
             }
             if(EPS_text.equals(""))
             {
-                FAILS += "EPS,";System.out.println(ALIAS);
+                FAILS += "EPS,";
             }
             if(range52.equals(""))
             {

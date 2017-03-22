@@ -18,10 +18,8 @@ public class StockBuilder
     private static DecimalFormat doublesFormatter = new DecimalFormat("0.000000");
 
 
-    public static long build(String args[])
+    public static StockSet build(String args[])
     {
-
-
         ArgumentMap arguments = new ArgumentMap();
         arguments.parse(args);
 
@@ -107,9 +105,13 @@ public class StockBuilder
 
                             for(int i = 50; i < Math.min(300,words.length);i++)
                             {
-                                if(words[i].equals("Date") && words[i-1].equals("Earnings"))
+                                if(words[i].equals("Date") && words[i-1].equals("Earnings") && !words[i+1].equals("N/A"))
                                 {
-                                    earningDate = words[i+1]+words[i+2]+words[i+3]+words[i+4]+words[i+5]+words[i+6]+words[i+7];
+                                    int k = i+1;
+                                    while(!words[k].equals("Dividend") && (k-i)<7 && k< words.length)
+                                    {
+                                        earningDate += words[k] + " ";k++;
+                                    }
                                 }else if(words[i].equals("Range") && words[i-1].equals("Week") && words[i-2].equals("52"))
                                 {
                                     range52 = words[i+1] + " " + words[i+2] + " " + words[i+3];
@@ -146,7 +148,7 @@ public class StockBuilder
         System.out.println("Per stock cleaning time average: " + doublesFormatter.format(cleanTime/1000.0/structure.size()) + " seconds");
         System.out.println("Per stock calclulation time average: "+ doublesFormatter.format(((end - start)/1000.0/structure.size())-(cleanTime/1000.0/structure.size()))+ " seconds");
         System.out.println(Stock.cnttt);
-        return (end - start);
+        return set;
     }
 
 

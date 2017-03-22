@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public class EPS
 {
     private ArrayList<Double> variablesCopies;
-    private boolean isValid = true;
+    public boolean isValid = true;
     private Double Q1_ACTUAL;
     private Double Q2_ACTUAL;
     private Double Q3_ACTUAL;
@@ -91,5 +91,9 @@ public class EPS
         return output;
     }
 
+    public String getOriginal()
+    {
+        return Q1_EST + "," + Q2_EST + ","+ Q3_EST + ","+ Q4_EST + ","+ Q1_ACTUAL + ","+ Q2_ACTUAL + ","+ Q3_ACTUAL + ","+ Q4_ACTUAL + ",";
+    }
 
 }

@@ -18,8 +18,7 @@ public class repetitionTester
         for(int i = 0; i < it;i++)
         {
             System.out.println("On iteration " + i);
-            long time = StockBuilder.build(args);
-            sum += time;
+            StockBuilder.build(args);
         }
         double logTime = (sum/1000.0/it);
         System.out.println("\nAvg logging time: " + logTime);
@@ -33,8 +32,7 @@ public class repetitionTester
         for(int i = 0; i < it;i++)
         {
             System.out.println("On iteration " + i);
-            long time = StockBuilder.build(args);
-            sum += time;
+            StockBuilder.build(args);
         }
 
         System.out.println("\nAvg logging time: " + logTime);
