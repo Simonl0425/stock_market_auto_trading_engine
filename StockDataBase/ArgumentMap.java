@@ -18,9 +18,16 @@ public class ArgumentMap {
 	}
 
 
+
+
 	public int numFlags()
 	{
 		return map.size();
+	}
+
+	public boolean isValid(String flag)
+	{
+		return hasFlag(flag) && hasValue(flag);
 	}
 
 	public boolean hasFlag(String flag)

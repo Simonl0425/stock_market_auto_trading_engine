@@ -18,23 +18,16 @@ public class StockBuilder
     private static DecimalFormat doublesFormatter = new DecimalFormat("0.000000");
 
 
-    public static StockSet build(String args[])
+    public static StockSet build(Path rootPath)
     {
-        ArgumentMap arguments = new ArgumentMap();
-        arguments.parse(args);
+        return build(rootPath,null);
+    }
 
-        if(arguments.hasFlag("-d")){DEBUG = true;}
-        if(arguments.hasFlag("-l") && arguments.hasValue("-l"))
-        {
-            logPath = Paths.get(arguments.getValue("-l"));
-        }
-        if(arguments.hasFlag("-p") && arguments.hasValue("-p"))
-        {
-            root = Paths.get(arguments.getValue("-p"));
-        }else{
-            System.out.println("\nUsage: java StockBuilder <flag> <value>\n\t-p <path> input path\n\t-l <path> enable logging with path\n\t-d        enable debugging mode\n");
-            System.exit(1);
-        }
+    public static StockSet build(Path rootPath, Path logPath)
+    {
+
+        StockBuilder.root = rootPath;
+        StockBuilder.logPath = logPath;
 
         StockSet set = new StockSet();
         long start = System.currentTimeMillis();

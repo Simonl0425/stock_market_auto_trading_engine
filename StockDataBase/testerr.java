@@ -12,7 +12,7 @@ public class testerr
         String arg[] = {"-p","../test/Nasdaq"};
         Path write = Paths.get("../output.csv");
 
-        try{CSVhandler.write(write,StockBuilder.build(arg));}
+        try{CSVhandler.write(write,StockBuilder.build(Paths.get(arg[1])));}
         catch(Exception e)
         {
             e.printStackTrace();
