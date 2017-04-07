@@ -2,5 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="StockDataBase"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Log4j2"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
