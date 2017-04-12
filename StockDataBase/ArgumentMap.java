@@ -1,14 +1,19 @@
-import java.util.*;
+import java.util.HashMap;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class ArgumentMap {
+public class ArgumentMap
+{
 
-
-	private HashMap<String,String> map;
+	private Logger log = LogManager.getLogger();
+	
+	private HashMap<String, String> map;
 
 	public ArgumentMap()
 	{
 		map = new HashMap<>();
+		log.trace("Argument Map " + this.hashCode() + " initialized.");
 	}
 
 	public ArgumentMap(String[] args)
@@ -16,9 +21,6 @@ public class ArgumentMap {
 		this();
 		parse(args);
 	}
-
-
-
 
 	public int numFlags()
 	{
@@ -42,32 +44,41 @@ public class ArgumentMap {
 
 	public void parse(String[] args)
 	{
-		for(int i = 0; i < args.length;i++)
+		log.debug("Parsing args " + args + " into argument map");
+		for (int i = 0; i < args.length; i++)
 		{
 			String input = args[i];
-			if(isFlag(input))
+			if (isFlag(input))
 			{
 				map.put(input, null);
-			}else if(isValue(input) && i != 0 && isFlag(args[i-1])){
-				map.put(args[i-1], input);
+			} else if (isValue(input) && i != 0 && isFlag(args[i - 1]))
+			{
+				map.put(args[i - 1], input);
 			}
 		}
+		log.debug("Parsing complete");
 	}
 
 	private boolean isFlag(String input)
 	{
-		if(input == null)
+		if (input == null)
+		{
 			return false;
-		else
+		} else
+		{
 			return (input.startsWith("-")) && (input.length() >= 2) && (input.indexOf(" ") == -1);
+		}
 	}
 
 	private boolean isValue(String input)
 	{
-		if(input == null)
+		if (input == null)
+		{
 			return false;
-		else
+		} else
+		{
 			return (!input.startsWith("-")) && (input.length() >= 1) && !(input.startsWith(" ")) && !input.contains("\t");
+		}
 	}
 
 	public String getValue(String flag)
@@ -75,11 +86,11 @@ public class ArgumentMap {
 		return map.get(flag);
 	}
 
-
+	@Override
 	public String toString()
 	{
 		String output = "";
-		for(String key: map.keySet())
+		for (String key: map.keySet())
 		{
 			output += "Flag: " + key + "  Value: " + map.get(key) + "\n";
 		}

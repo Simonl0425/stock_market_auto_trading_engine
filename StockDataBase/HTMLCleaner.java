@@ -1,66 +1,76 @@
-import java.nio.file.Files;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.nio.file.Path;
-import java.nio.charset.StandardCharsets;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.FileWriter;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class HTMLCleaner
 {
+	private static Logger log = LogManager.getLogger();
+	private static BufferedReader fileReader;
 
-    private static BufferedReader fileReader;
+	public static String clean(Path path) throws IOException, IllegalArgumentException
+	{
 
+		fileReader = Files.newBufferedReader(path, StandardCharsets.UTF_8);
+		log.trace("     Cleaning " + path.toString() + "\n");
+		long startTime = System.currentTimeMillis();
 
-    public static String clean(Path path) throws IOException, IllegalArgumentException
-    {
+		StringBuilder content = new StringBuilder();
+		String line = "";
 
-        fileReader = Files.newBufferedReader(path,StandardCharsets.UTF_8);
-        StockBuilder.log("     Cleaning " + path.toString() + "\n");
-        long startTime = System.currentTimeMillis();
+		while ((line = fileReader.readLine()) != null)
+		{
+			content.append(line);
+		}
 
-        StringBuilder content = new StringBuilder();
-        String line = "";
+		content = new StringBuilder(clean(content.substring(0, content.length() / 2).toString()));
+		long endTime = System.currentTimeMillis();
+		log.trace("\t\tCleaning took: " + (endTime - startTime) / 1000.0 + " seconds\n");
 
-        while((line = fileReader.readLine()) != null)
-        {content.append(line);}
+		fileReader.close();
 
-        content = new StringBuilder(clean(content.substring(0,content.length()/2).toString()));
-        long endTime = System.currentTimeMillis();
-        StockBuilder.log("\t\tCleaning took: " + (endTime - startTime)/1000.0 + " seconds\n");
+		return content.toString();
+	}
 
-        fileReader.close();
-
-        return content.toString();
-    }
-
-
-    public static String clean(String html)
-    {
-    	html = stripComments(html);
-    	html = stripElement(html, "head");
-        html = stripElement(html, "script");
+	public static String clean(String html)
+	{
+		html = stripComments(html);
+		html = stripElement(html, "head");
+		html = stripElement(html, "script");
 		html = stripElement(html, "style");
-    	html = stripTags(html);
-    	html = stripEntities(html);
+		html = stripTags(html);
+		html = stripEntities(html);
 		html = stripSpaces(html);
-        return html;
-    }
-    public static String stripEntities(String html)
-	{return html.replaceAll("&[^\\s]+?;", " ");}
+		return html;
+	}
+
+	public static String stripEntities(String html)
+	{
+		return html.replaceAll("&[^\\s]+?;", " ");
+	}
 
 	public static String stripComments(String html)
-	{return html.replaceAll("(?s)<!-.*?->", " ");}
+	{
+		return html.replaceAll("(?s)<!-.*?->", " ");
+	}
 
 	public static String stripTags(String html)
-	{return html.replaceAll("<[^>]+?>", " ");}
+	{
+		return html.replaceAll("<[^>]+?>", " ");
+	}
 
 	public static String stripElement(String html, String name)
-	{return html.replaceAll("(?s)(?i)<"+name+".+?</"+name+".*?>", " ");}
+	{
+		return html.replaceAll("(?s)(?i)<" + name + ".+?</" + name + ".*?>", " ");
+	}
 
 	public static String stripSpaces(String html)
-	{return html.replaceAll("\\p{Space}+", " ");}
+	{
+		return html.replaceAll("\\p{Space}+", " ");
+	}
 
 }
