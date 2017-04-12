@@ -7,7 +7,7 @@ public class testerr
 	public static void main(String args[])
 	{
 		String arg[] =
-		{ "-p", "../test/Nasdaq" };
+		{ "-p", "test\\Nasdaq300" };
 		Path write = Paths.get("../output.csv");
 
 		try

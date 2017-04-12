@@ -33,11 +33,6 @@ public class StockBuilder
 			int cnt = 0;
 			for (HashSet<Path> stockFolder: structure)
 			{
-				for (int i = 0; i < String.valueOf(cnt).length() + 9; i++)
-				{
-					System.out.print("\b");
-				}
-				System.out.print("Working: " + cnt++);
 				String name = "";
 				String alias = "";
 				String earningDate = "";
@@ -78,7 +73,7 @@ public class StockBuilder
 								EPS_text = EPS_text.substring(0, EPS_text.length() - 1);
 							} else
 							{
-								log.warn("==========!!!Illegal EPS detected, illegal data member count: " + EPS_text.split(",").length + "\n");
+								log.warn("==========!!!Illegal EPS detected, illegal data member count: " + EPS_text.split(",").length);
 							}
 						} else if (stockFile.getFileName().toString().toLowerCase().startsWith("summary"))
 						{
@@ -110,11 +105,11 @@ public class StockBuilder
 						}
 					} else if (stockFile.toString().toLowerCase().endsWith(".csv"))
 					{
-						log.info("     CSV captured\n");
+						log.info("CSV captured");
 						csvPath = Paths.get(stockFile.toString());
 					} else
 					{
-						log.warn("======>Unknown file detected at" + stockFile.toString() + "\n");
+						log.warn("======>Unknown file detected at" + stockFile.toString());
 					}
 				}
 				log.info("Data captrured, attempting to create stock object...");

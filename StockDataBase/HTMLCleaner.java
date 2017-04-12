@@ -16,7 +16,7 @@ public class HTMLCleaner
 	{
 
 		fileReader = Files.newBufferedReader(path, StandardCharsets.UTF_8);
-		log.trace("     Cleaning " + path.toString() + "\n");
+		log.trace("Cleaning " + path.toString());
 		long startTime = System.currentTimeMillis();
 
 		StringBuilder content = new StringBuilder();
@@ -29,7 +29,7 @@ public class HTMLCleaner
 
 		content = new StringBuilder(clean(content.substring(0, content.length() / 2).toString()));
 		long endTime = System.currentTimeMillis();
-		log.trace("\t\tCleaning took: " + (endTime - startTime) / 1000.0 + " seconds\n");
+		log.trace("Cleaning took: " + (endTime - startTime) / 1000.0 + " seconds");
 
 		fileReader.close();
 
